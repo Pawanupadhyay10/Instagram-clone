@@ -5,4 +5,4 @@ const userSchema=new mongoose.Schema({
     passward:{ type: String, required: true }
 })
 
-mongoose.model("User",userSchema)
+mongoose.model("User",userSchema)//name of the model is User 
