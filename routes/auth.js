@@ -64,7 +64,8 @@ router.post('/signin', (req, res) => {
                     if(doMatch){
                             // res.json({ msg: "saved successfully" })
                             const token =jwt.sign({_id:saveduser._id},JWT_SECRET) // token is asigned by jwt on the basis of user id 
-                            res.json({token})
+                            const {_id,name,email}=saveduser
+                            res.json({token,user:{_id,name,email}})
                     }
                     else{
                 return res.status(422).json({ error: "invalid fields" })
