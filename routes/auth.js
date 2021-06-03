@@ -2,16 +2,12 @@ const express = require('express');
 const router = express.Router();
 const bycrypt = require('bcryptjs');
 const jwt=require('jsonwebtoken');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const User = mongoose.model("User");
 const {JWT_SECRET}=require('../keys');
 const requirelogin=require('../middleware/requirelogin')
 
-router.get('/protected',requirelogin, (req, res) =>{
-     res.send("hello world!!!")
-});
-
-router.post('/singup', (req, res) => {
+router.post('/signup', (req, res) => {
     const { name, email, passward } = req.body
     if (!email || !passward || !name) {
         return res.status(422).json({ error: "PLs add all field" })
@@ -23,8 +19,8 @@ router.post('/singup', (req, res) => {
             }
             bycrypt.hash(passward, 12)
                 .then(haspassward => {
-                    const user = new User({
-                        email, passward: haspassward, name
+                    const user = new User({                    
+                        email, passward:haspassward,name
                     })
                     user.save()
                         .then(user => {
@@ -40,7 +36,7 @@ router.post('/singup', (req, res) => {
         })
 });
 
-router.post('/singin', (req, res) => {
+router.post('/login', (req, res) => {
     const { email, passward } = req.body
     if (!email || !passward) {
         return res.status(422).json({ error: "PLs add email and passward field" })
@@ -55,7 +51,8 @@ router.post('/singin', (req, res) => {
                     if(doMatch){
                             // res.json({ msg: "saved successfully" })
                             const token =jwt.sign({_id:saveduser._id},JWT_SECRET)
-                            res.json({token})
+                            const { _id,email, name }=saveduser
+                        res.json({ token, user: { _id, email, name}})
                     }
                     else{
                 return res.status(422).json({ error: "invalid fields" })
