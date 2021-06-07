@@ -30,9 +30,10 @@ router.post('/signup', (req, res) => {
             if (saveduser) {
                 return res.status(422).json({ error: "error exist with different fields" })
             }
+            /*saving in the database */
             bycrypt.hash(passward, 12)
                 .then(haspassward => {
-                    const user = new User({
+                    const user = new User({//name of the database 
                         email, passward: haspassward, name
                     })
                     user.save()
@@ -53,7 +54,7 @@ router.post('/signin', (req, res) => {
     const { email, passward } = req.body
     if (!email || !passward) {
         return res.status(422).json({ error: "PLs add email and passward field" })
-    }
+    } 
     User.findOne({ email: email })//json format 
         .then((saveduser) => {
             if (!saveduser) {
