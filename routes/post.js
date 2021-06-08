@@ -1,50 +1,49 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const requirelogin=require('../middleware/requirelogin');
-const Post=mongoose.model("Post")
+const requirelogin = require('../middleware/requirelogin');
+const Post = mongoose.model("Post")
 
-
-router.get('/allpost',(req,res)=>{
+router.get('/allpost', requirelogin, (req, res) => {
     Post.find()
-    .populate("postedBy","_id name")
-    .then(posts=>{
-        res.json({posts})
-    })
-    .catch(err => {
+        .populate("postedBy", "_id name")
+        .then(posts => {
+            res.json({ posts })
+        })
+        .catch(err => {
             console.log(err)
         })
 })
 
-router.post('/createpost',requirelogin,(req,res)=>{
-    const { title,body,pic} = req.body
-    if(!title || !body|| !pic){
+router.post('/createpost', requirelogin, (req, res) => {
+    const { title, body, pic } = req.body
+    if (!title || !body || !pic) {
         return res.status(422).json({ error: "PLs add all field" })
     }
-   // req.user.passward=undefined
+    // req.user.passward=undefined
     const post = new Post({
-        title, 
+        title,
         body,
-        photo:pic,
-        postedBy:req.user
+        photo: pic,
+        postedBy: req.user
     })
     post.save().then(result => {
-            res.json({ post:result })
-        })
+        res.json({ post: result })
+    })
         .catch(err => {
             console.log(err)
         })
 })
 
-router.get('/mypost',requirelogin,(res,req)=>{
-    Post.find({postedBy:req.user._id})
-    .populate("PostedBy","_id name")
-        .then(myposts => {
-            res.json({ myposts })
+// we have to make this route so that we can view the profile of his / her
+router.get('/mypost', requirelogin, (req, res) => {
+    Post.find({ postedBy:req.user._id})
+        .populate("PostedBy","_id name")
+        .then(mypost => {
+            res.json({mypost})
         })
         .catch(err => {
             console.log(err)
         })
 })
-
-module.exports=router
+module.exports = router
