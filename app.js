@@ -4,7 +4,8 @@ const mongoose=require('mongoose')
 const PORT=5000
 const{MONGOURI}=require('./keys')
 //9sZBODpeAEMomtoJ
-mongoose.connect(MONGOURI, { useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(MONGOURI, { useNewUrlParser: true, useUnifiedTopology: true
+    , useFindAndModify: false})
 mongoose.connection.on('connected',()=>{
     console.log("Mongo connected:");
 })
