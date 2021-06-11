@@ -8,7 +8,7 @@ const {JWT_SECRET}=require('../keys');
 const requirelogin=require('../middleware/requirelogin')
 
 router.post('/signup', (req, res) => {
-    const { name, email, passward } = req.body
+    const { name, email, passward, pic} = req.body
     if (!email || !passward || !name) {
         return res.status(422).json({ error: "PLs add all field" })
     }
@@ -20,7 +20,7 @@ router.post('/signup', (req, res) => {
             bycrypt.hash(passward, 12)
                 .then(haspassward => {
                     const user = new User({                    
-                        email, passward:haspassward,name
+                        email, passward:haspassward,name,pic
                     })
                     user.save()
                         .then(user => {
@@ -51,8 +51,8 @@ router.post('/login', (req, res) => {
                     if(doMatch){
                             // res.json({ msg: "saved successfully" })
                             const token =jwt.sign({_id:saveduser._id},JWT_SECRET)
-                            const { _id,email, name }=saveduser
-                        res.json({ token, user: { _id, email, name}})
+                            const { _id,email, name,followers,following,pic}=saveduser
+                        res.json({ token, user: { _id, email, name,followers, following,pic}})
                     }
                     else{
                 return res.status(422).json({ error: "invalid fields" })

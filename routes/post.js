@@ -16,6 +16,18 @@ router.get('/allpost', requirelogin, (req, res) => {
         })
 })
 
+router.get('/getsubpost', requirelogin, (req, res) => {
+    Post.find({postedBy:{$in:req.user.following}})
+        .populate("postedBy", "_id name")
+        .populate("comments.postedBy", "_id name")
+        .then(posts => {
+            res.json({ posts })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+})
+
 router.post('/createpost', requirelogin, (req, res) => {
     const { title, body, pic } = req.body
     if (!title || !body || !pic) {
@@ -35,7 +47,6 @@ router.post('/createpost', requirelogin, (req, res) => {
             console.log(err)
         })
 })
-
 // we have to make this route so that we can view the profile of his / her
 router.get('/mypost', requirelogin, (req, res) => {
     Post.find({ postedBy:req.user._id})
@@ -105,7 +116,7 @@ router.delete('/deletepost/:postId',requirelogin,(req,res)=>{
         if(err || !post){
             return res.status(422).json({error:err})
         }
-        if (post.postedBy._id.toSring() === req.user._id.toSring()){
+        if (post.postedBy._id.toString()=== req.user._id.toString()){
             post.remove()
             .then(result=>{
                 res.json({result})
@@ -115,4 +126,5 @@ router.delete('/deletepost/:postId',requirelogin,(req,res)=>{
         }
     })
 })
+
 module.exports = router
