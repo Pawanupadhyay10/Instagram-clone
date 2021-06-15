@@ -1,27 +1,27 @@
-const express = require('express')
-const router = express.Router()
-router.get('/', (req, res) =>{
-    res.send("hello world!!!")
-})
-/*posting name and password 
-router.post('/signup',(req,res)=>{
-    console.log(req.body)//console .log means printing in cmd
-    // to access the name of the user we will request the body 
-})*/
-module.exports = router
+const express = require('express');
+const router = express.Router();
+const crypto=require('crypto')
 const bycrypt = require('bcryptjs');
 const jwt=require('jsonwebtoken');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const User = mongoose.model("User");
-const {JWT_SECRET}=require('../keys');//2 directories up 
+const {JWT_SECRET}=require('../keys');
 const requirelogin=require('../middleware/requirelogin')
+//const nodemailer=requirelogin('nodemailer')
+//const sendgridTransport=require('nodemailer-sendgrid-transport')
+/*const {SENDGRID_API,EMAIL}= require('./keys')
+const transport = nodemailer.createTransport(sendgridTransport({
+    auth:{
+        api_key:SENDGRID_API
+    }
+}))*/
 
-/*router.get('/protected',requirelogin, (req, res) =>{
-     res.send("hello world!!!")
-});*/
-
+//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
+router.get('/', (req, res) =>{
+    res.send("hello world!!!")
+});
 router.post('/signup', (req, res) => {
-    const { name, email, passward } = req.body
+    const { name, email, passward, pic} = req.body
     if (!email || !passward || !name) {
         return res.status(422).json({ error: "PLs add all field" })
     }
@@ -30,14 +30,14 @@ router.post('/signup', (req, res) => {
             if (saveduser) {
                 return res.status(422).json({ error: "error exist with different fields" })
             }
-            /*saving in the database */
             bycrypt.hash(passward, 12)
                 .then(haspassward => {
-                    const user = new User({//name of the database 
-                        email, passward: haspassward, name
+                    const user = new User({                    
+                        email, passward:haspassward,name,pic
                     })
                     user.save()
                         .then(user => {
+                            
                             res.json({ msg: "saved successfully" })
                         })
                         .catch(err => {
@@ -50,31 +50,32 @@ router.post('/signup', (req, res) => {
         })
 });
 
-router.post('/signin', (req, res) => {
+router.post('/login', (req, res) => {
     const { email, passward } = req.body
     if (!email || !passward) {
         return res.status(422).json({ error: "PLs add email and passward field" })
-    } 
-    User.findOne({ email: email })//json format 
+    }
+    User.findOne({ email: email })
         .then((saveduser) => {
             if (!saveduser) {
                 return res.status(422).json({ error: "error exist with different fields" })
             }
-            bycrypt.compare(passward,saveduser.passward) //if we got user with email then compare password
-                .then(doMatch => {//returns boolean value 
+            bycrypt.compare(passward,saveduser.passward)
+                .then(doMatch => {
                     if(doMatch){
                             // res.json({ msg: "saved successfully" })
-                            const token =jwt.sign({_id:saveduser._id},JWT_SECRET) // token is asigned by jwt on the basis of user id 
-                            const {_id,name,email}=saveduser
-                            res.json({token,user:{_id,name,email}})
+                            const token =jwt.sign({_id:saveduser._id},JWT_SECRET)
+                            const { _id,email, name,followers,following,pic}=saveduser
+                        res.json({ token, user: { _id, email, name,followers, following,pic}})
                     }
                     else{
                 return res.status(422).json({ error: "invalid fields" })
                     }
                 })
         })
-        .catch(err => {//if error is there in then block 
+        .catch(err => {
             console.log(err)
         })
 });
 
+module.exports = router

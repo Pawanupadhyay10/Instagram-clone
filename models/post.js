@@ -16,10 +16,16 @@ const postSchema=new mongoose.Schema({
         //default:"NO PHOTO"
     },
     likes:[{type:ObjectId,ref:"User"}],
+
+    comments:[{
+        text:String,
+        postedBy:{type:ObjectId,ref:"User"}
+    }],
+    
     postedBy:{
         type:ObjectId,
         ref:"User"
     }
 
-})
+},{timestamp:true})
  mongoose.model("Post",postSchema)//name of the model is Post 
