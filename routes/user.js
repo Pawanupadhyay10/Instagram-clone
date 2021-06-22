@@ -18,46 +18,51 @@ router.get('/user/:id',requirelogin,(req,res)=>{
                res.json({user,posts})
         }) 
     }).catch(err=>{
-        return res.status(404).json({error:err})
+        return res.status(404).json({error:"User not found"})
     })
 })
 
 router.put('/follow',requirelogin,(req,res)=>{
     User.findByIdAndUpdate(req.body.followId,{
-        $push:{followers:req.user._id}//this is the id of the login user 
-         },{new:true}).select("-passward")
-        ,(err,result=>{
-         if(err){
-             return res.status(422).json({error:err})
-         }
-         User.findByIdAndUpdate(req.user._id,{
-             $push:{following:req.body.followId}
-         },{new:true}).then(result=>{
-             res.json(result)
-         }).catch(err=>{
-             return res.status(422).json({error:err})
-         })
-    })
-})
-
-router.put('/unfollow', requirelogin, (req, res) => {
-    User.findByIdAndUpdate(req.body.unfollowId, {
-        $pull: { followers: req.body._id }
-    }, { new: true }).select("-passward")
-      , (err, result => {
-        if (err) {
-            return res.status(422).json({
-                error: err
-            })
+        $push:{followers:req.user._id}
+    },{
+        new:true
+    },(err,result)=>{
+        if(err){
+            return res.status(422).json({error:err})
         }
-        User.findByIdAndUpdate(req.user._id, {
-            $pull: { following: req.body.unfollowId }
-        }, { new: true }).then(result => {
-            res.json(result)
-        }).catch(err => {
-            return res.status(422).json({ error: err })
-        })
-    })
+      User.findByIdAndUpdate(req.user._id,{
+          $push:{following:req.body.followId}
+          
+      },{new:true}).select("-passward").then(result=>{
+          res.json(result)
+      }).catch(err=>{
+          return res.status(422).json({error:err})
+      })
+
+    }
+    )
+})
+router.put('/unfollow',requirelogin,(req,res)=>{
+    User.findByIdAndUpdate(req.body.unfollowId,{
+        $pull:{followers:req.user._id}
+    },{
+        new:true
+    },(err,result)=>{
+        if(err){
+            return res.status(422).json({error:err})
+        }
+      User.findByIdAndUpdate(req.user._id,{
+          $pull:{following:req.body.unfollowId}
+          
+      },{new:true}).select("-passward").then(result=>{
+          res.json(result)
+      }).catch(err=>{
+          return res.status(422).json({error:err})
+      })
+
+    }
+    )
 })
 
 router.put('/updatepic',requirelogin,(req,res)=>{
@@ -70,5 +75,16 @@ router.put('/updatepic',requirelogin,(req,res)=>{
         })
 })
 
+router.post('/search-users',(req,res)=>{
+    let userPattern = new RegExp("^"+req.body.query)
+    User.find({email:{$regex:userPattern}})
+    .select("_id email")
+    .then(user=>{
+        res.json({user})
+    }).catch(err=>{
+        console.log(err)
+    })
+
+})
 
 module.exports = router;

@@ -2,9 +2,10 @@
   "name": "insta_clone",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start":"node app.js ",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix INSTA-UI && npm run build --prefix INSTA-UI"
   },
   "author": "",
   "license": "ISC",

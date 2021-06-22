@@ -5,7 +5,7 @@ const bycrypt = require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = mongoose.model("User");
-const {JWT_SECRET}=require('../keys');
+const {JWT_SECRET}=require('../config/keys');
 const requirelogin=require('../middleware/requirelogin')
 //const nodemailer=requirelogin('nodemailer')
 //const sendgridTransport=require('nodemailer-sendgrid-transport')
@@ -50,7 +50,7 @@ router.post('/signup', (req, res) => {
         })
 });
 
-router.post('/login', (req, res) => {
+router.post('/signin', (req, res) => {
     const { email, passward } = req.body
     if (!email || !passward) {
         return res.status(422).json({ error: "PLs add email and passward field" })
@@ -66,7 +66,7 @@ router.post('/login', (req, res) => {
                             // res.json({ msg: "saved successfully" })
                             const token =jwt.sign({_id:saveduser._id},JWT_SECRET)
                             const { _id,email, name,followers,following,pic}=saveduser
-                        res.json({ token, user: { _id, email, name,followers, following,pic}})
+                        res.json({ token, user: { _id, email, name,followers,following,pic}})
                     }
                     else{
                 return res.status(422).json({ error: "invalid fields" })
