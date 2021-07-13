@@ -10,6 +10,7 @@ router.get('/allpost',requirelogin, (req, res) => {
      Post.find()//finds all post
      .populate("postedBy","_id name")//expanding something is known as populate 
      .populate("comments.postedBy","_id name")
+     .sort('-createdAt')//in descending order
      .then(posts=>{//name of the database that we have created 
          res.json({posts})
      })
@@ -22,7 +23,7 @@ router.get('/getsubpost', requirelogin, (req, res) => {
     Post.find({postedBy:{$in:req.user.following}})//for postedBy in following ,output is it will display only those only 
         .populate("postedBy", "_id name")
         .populate("comments.postedBy", "_id name")
-        .sort('created at')
+        .sort('created at')//ascending order
         .then(posts => {
             res.json({ posts })
         })
