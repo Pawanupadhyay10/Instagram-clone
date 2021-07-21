@@ -1,5 +1,5 @@
 const express=require('express')
-const { globalAgent } = require('http')
+//const { globalAgent } = require('http')
 const app=express()
 const mongoose=require('mongoose')
 const PORT= process.env.PORT ||5000
@@ -13,8 +13,8 @@ mongoose.connection.on('connected',()=>{
 })
 
 
-mongoose.connection.on('error',(error) => {
-    console.log("error connected:",error)
+mongoose.connection.on('error',(err) => {
+    console.log("error connected:",err)
 })
 require('./models/user') 
 require('./models/post')

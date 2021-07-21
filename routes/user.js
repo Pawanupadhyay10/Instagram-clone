@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require('express')
 const router = express.Router();
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const requirelogin = require('../middleware/requirelogin');
 const Post = mongoose.model("Post")
 const User = mongoose.model("User")
@@ -87,4 +87,4 @@ router.post('/search-users',(req,res)=>{
 
 })
 
-module.exports = router;
+module.exports = router

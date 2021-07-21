@@ -1,5 +1,5 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 const crypto=require('crypto')
 const bycrypt = require('bcryptjs');
 const jwt=require('jsonwebtoken');
@@ -7,15 +7,17 @@ const mongoose = require('mongoose');
 const User = mongoose.model("User");
 const {JWT_SECRET}=require('../config/keys');
 const requirelogin=require('../middleware/requirelogin')
-const nodemailer=requirelogin('nodemailer')
+const nodemailer=require('nodemailer')
 const sendgridTransport=require('nodemailer-sendgrid-transport')
 const {SENDGRID_API,EMAIL}= require('../config/keys')
-const transport = nodemailer.createTransport(sendgridTransport({
+const transporter = nodemailer.createTransport(sendgridTransport({
     auth:{
-        api_key:"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"
+        api_key:SENDGRID_API
     }
 }))
 //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
+//const sgMail=require("@sendgrid/mail")
+//api_key=SENDGRID_API
 
 
 router.get('/', (req, res) =>{
@@ -27,22 +29,23 @@ router.post('/signup', (req, res) => {
         return res.status(422).json({ error: "PLs add all field" })
     }
     User.findOne({ email: email })
-        .then((saveduser) => {
-            if (saveduser) {
+        .then((savedUser) => {
+            if (savedUser) {
                 return res.status(422).json({ error: "error exist with different fields" })
             }
             bycrypt.hash(passward, 12)
-                .then(haspassward => {
+                .then(hashedpassward => {
                     const user = new User({                    
-                        email, passward:haspassward,name,pic
+                        email, 
+                        passward:hashedpassward,name,pic
                     })
                     user.save()
                         .then(user => {
                             transporter.sendMail({
                                     to:user.email,
-                                    from:"no-reply@insta.com",
+                                    from:"money148001@gmail.com",
                                     subject:"signup success",
-                                     html:"<h1>welcome to instagram</h1>"
+                                    html:"<h1>welcome to instagram</h1>"
                                  })
                             res.json({ msg: "saved successfully" })
                         })
@@ -62,26 +65,28 @@ router.post('/signin', (req, res) => {
         return res.status(422).json({ error: "PLs add email and passward field" })
     }
     User.findOne({ email: email })
-        .then((saveduser) => {
-            if (!saveduser) {
+        .then((savedUser) => {
+            if (!savedUser) {
                 return res.status(422).json({ error: "error exist with different fields" })
             }
-            bycrypt.compare(passward,saveduser.passward)
+            bycrypt.compare(passward,savedUser.passward)
                 .then(doMatch => {
                     if(doMatch){
                             // res.json({ msg: "saved successfully" })
-                            const token =jwt.sign({_id:saveduser._id},JWT_SECRET)
-                            const { _id,email, name,followers,following,pic}=saveduser
-                        res.json({ token, user: { _id, email, name,followers,following,pic}})
+                            const token =jwt.sign({_id:savedUser._id},JWT_SECRET)
+                            const { _id,name,email,followers,following,pic}=savedUser
+                            res.json({ token, user: { _id,  name,email,followers,following,pic}})
                     }
                     else{
                 return res.status(422).json({ error: "invalid fields" })
                     }
                 })
-        })
+        
         .catch(err => {
             console.log(err)
+    
         })
+    })
 });
 
 router.post('/reset-passward',(req,res)=>{
@@ -98,21 +103,28 @@ router.post('/reset-passward',(req,res)=>{
             user.resetToken = token
             user.expireToken = Date.now() + 3600000
             user.save().then((result)=>{
-                transporter.sendMail({
-                    to:user.email,
-                    from:"no-replay@insta.com",
-                    subject:"password reset",
-                    html:`
-                    <p>You requested for password reset</p>
-                    <h5>click in this <a href="${EMAIL}/reset/${token}">link</a> to reset password</h5>
-                    `//<a href="http://localhost:3000/reset/${token}">link</a> to reset password</h5>
+            transporter.sendMail({
+             to:user.email,
+              from:"Pawandev1099@gmail.com",
+              subject:"password reset",
+              html:`
+              <p>You requested for password reset</p>
+              
+              <h5>click in this <a href="${EMAIL}/reset/${token}">link</a> to reset password</h5>
+              `
+                //<a href="http://localhost:3000/reset/${token}">link</a> to reset password</h5> 
+               
                 })
-                res.json({message:"check your email"})
+            res.json({message:"check your email"})
+           })
+            .catch((err)=>{
+                console.error(err)
             })
 
         })
-    })
-})
+
+   })
+});
 
 
 router.post('/new-passward',(req,res)=>{
@@ -124,7 +136,7 @@ router.post('/new-passward',(req,res)=>{
            return res.status(422).json({error:"Try again session expired"})
        }
        bcrypt.hash(newPassward,12).then(hashedpassword=>{
-          user.passward = hashedpassword//spelling
+          user.passward = hashedpassward//spelling
           user.resetToken = undefined
           user.expireToken = undefined
           user.save().then((saveduser)=>{
@@ -134,7 +146,7 @@ router.post('/new-passward',(req,res)=>{
    }).catch(err=>{
        console.log(err)
    })
-})
+});
 
 
 module.exports = router

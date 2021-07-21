@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const User = mongoose.model("User")
 
 module.exports=(req,res,next)=>{
-   const{authorization}=req.headers
+   const {authorization} = req.headers
    if(!authorization){
     // console.log()
       return res.status(401).json({error:"you must be logged in"})
