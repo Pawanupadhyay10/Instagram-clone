@@ -12,6 +12,7 @@ import UserProfile from './components/screens/UserProfile'
 import Subscribepost from './components/screens/Subscribepost'
 import Reset from './components/screens/Reset'
 import Newpassword from './components/screens/Newpassward'
+import ScrollToTop from './components/screens/ScrollToTop';
 //  '/' is a default router 
 export const UserContext=createContext()
 
@@ -70,15 +71,20 @@ const Routing=()=>{
 function App() {
   const[state,dispatch]=useReducer(reducer,initialState)
   return (
-    
+    <>
     <UserContext.Provider value={{state,dispatch}}>
+    <div>
     <BrowserRouter>
     
       <Navbar />   
+      <main>
       <Routing/>
+      </main>
+      <ScrollToTop />
     </BrowserRouter>
+    </div>
     </UserContext.Provider>
-    
+    </>
   );
 }
 

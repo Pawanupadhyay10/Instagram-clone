@@ -25,7 +25,11 @@ const postSchema=new mongoose.Schema({
     postedBy:{
         type:ObjectId,
         ref:"User"
+    },
+    date:{
+        type:Date,
+        default:Date.now()
     }
 
-},{timestamp:true})
+},{timestamps:true})
  mongoose.model("Post",postSchema)//name of the model is Post 

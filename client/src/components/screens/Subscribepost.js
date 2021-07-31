@@ -74,8 +74,12 @@ const Subscribepost= () => {
             .then(result => {
                 // console.log(result)
                 const newData = data.map(item => {
-                    if (item._id === result._id) { return result }
-                    else { return item }
+                    if (item._id ==result._id) { 
+                        return result 
+                    }
+                    else { 
+                        return item 
+                    }
                 })
                 setData(newData)
             }).catch(err => {

@@ -23,7 +23,7 @@ router.get('/getsubpost', requirelogin, (req, res) => {
     Post.find({postedBy:{$in:req.user.following}})//for postedBy in following ,output is it will display only those only 
         .populate("postedBy", "_id name")
         .populate("comments.postedBy", "_id name")
-        .sort('created at')//ascending order
+        .sort('-createdAt')//ascending order
         .then(posts => {
             res.json({ posts })
         })
@@ -97,8 +97,10 @@ post.save().then(result=>{
 })
 
 router .put('/comment',requirelogin,(req,res)=>{
-    const comment={text:req.body.text,
-    postedBy:req.user._id}
+    const comment={
+    text:req.body.text,
+    postedBy:req.user._id
+    }
     Post.findByIdAndUpdate(req.body.postId,{
         $push:{comments:comment}
     },{
@@ -108,7 +110,8 @@ router .put('/comment',requirelogin,(req,res)=>{
      .populate("postedBy", "_id name")
      .exec((err, result) => {
          if (err) {
-             return res.status(422).json({ error: err })
+            // console.log(err)
+             return res.status(422).json({ error:err })
          } else {
              res.json(result)
          }
@@ -134,5 +137,30 @@ router .put('/comment',requirelogin,(req,res)=>{
     })
 })
 
+router.delete("/deletecomment/:id/:comment_id",requirelogin,(req,res)=>{
+    const comment={_id:req.params.comment_id};
+    Post.findByIdAndUpdate(
+        req.params.id,
+        {
+            $pull:{comments:comment},
+        },
+        {
+            new:true,
+        }
+    )
+    .populate("comments.postedBy","_id username pic")
+    .populate("postedBy","_id username pic")
+    .exec((err,postComment)=>{//The exec() method tests for a match in a string. 
+        //This method returns the matched text if it finds a match, otherwise it returns null.
+        if(err || !postComment){
+            return res.status(422).json({error:err});
+        }else{
+            const result=postComment;
+            res.json(result);
+        }
+
+        
+    })
+})
 module.exports=router
 //in whatso ever '/' requirelogin is written u have to supply it with authorization and body 
