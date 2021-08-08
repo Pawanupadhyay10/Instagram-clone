@@ -15,9 +15,7 @@ const transporter = nodemailer.createTransport(sendgridTransport({
         api_key:SENDGRID_API
     }
 }))
-//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
-//const sgMail=require("@sendgrid/mail")
-//api_key=SENDGRID_API
+
 
 
 router.get('/', (req, res) =>{
