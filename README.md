@@ -11,10 +11,10 @@
 
 ## What it does🚀
 Instagram clone (commonly abbreviated to IG, Insta or the gram)[is a photo sharing social networking platform.The app allows users to upload media i.e photos that can be likes and disliked.Posts can be shared publicly or with pre-approved followers. Users can browse other users' content by tags anview trending content. Users can like photos and follow other users to add their content to a personal feed.
-It is a full stack web application, we made using MERN stack . It first opens with login screen , user need to login if account exists or need to create account if new to platform , after successful singup it redirects user to login screen and now user need to login , that's how the auth works. 
+It is a full stack web application, we made using MERN stack . It first opens with login screen , user need to login if account exists or need to create account if new to platform , after successful signup it redirects user to login screen and now user need to login , that's how the auth works. 
 Now after login, home screen appears with lots of posts of users ,they make like ,unlike , or go to any user's profile from home screens posts , may follow and unfollow them as per their preference ,see the gallery of other peoples ,and if they wish to make a new post they may select create post camera icon from home screen.
 Also the search icon is at top ,if someone want to find their friend and wants to connect, they may make use of search feature.
-Most lovingly if user want to appriciate someone's post they may comment on the post and express themselves.
+Most lovingly if user want to appreciate someone's post they may comment on the post and express themselves.
 And finally they can logout the app if they want using logout button.
   
 ## How We built it🔨
