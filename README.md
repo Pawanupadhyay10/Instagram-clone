@@ -19,7 +19,7 @@ And finally they can logout the app if they want using logout button.
   
 ## How We built it🔨
 ![image](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) ![image](https://img.shields.io/badge/mongodb-0175C2?style=for-the-badge&logo=mongodb&logoColor=white) ![image](https://img.shields.io/badge/React-02569B?style=for-the-badge&logo=React&logoColor=white) ![image](https://img.shields.io/badge/express.js-%23039BE5.svg?style=for-the-badge&logo=express.js) ![image](https://img.shields.io/badge/Node.js-%23121011.svg?style=for-the-badge&logo=Node.js&logoColor=white) ![image](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) </br>
-I started off by creating a prototype in **Figma**. The mobile application was built using **MERN stack** and **VS-Stusio** as tool. We made use of **JWT(javascript web token)** for authentication and for saving user data.I used **cloudinary api** for image storage and **sendgrid api** for sending welcome emails. And finally deplyed at **heroku**.
+I started off by creating a prototype in **Figma**. The mobile application was built using **MERN stack** and **VS-Studio** as tool. We made use of **JWT(javascript web token)** for authentication and for saving user data.I used **cloudinary api** for image storage and **sendgrid api** for sending welcome emails. And finally deplyed at **heroku**.
 
 ## Challenges We ran into🔴
  I was very new to **JWT** authentication ,I really find it difficult to integrate it with web app,then at deployment time(It was my fist deployment with heroku) too much difficulty     arises because of secure keys ,which was very new to me and i was not aware about, how to hide them before production.
